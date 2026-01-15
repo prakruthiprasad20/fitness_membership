@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Dashboard</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #1a1a1a;
+      min-height: 100vh;
+    }
+
+    .admin-layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 250px;
+      background: #000000;
+      color: white;
+      padding: 40px 20px;
+      border-right: 1px solid #2a2a2a;
+    }
+
+    .sidebar h2 {
+      margin-bottom: 50px;
+      font-size: 22px;
+      letter-spacing: 3px;
+      font-weight: 300;
+      color: #ffffff;
+    }
+
+    .sidebar nav a {
+      display: block;
+      padding: 15px 20px;
+      margin-bottom: 10px;
+      color: #999999;
+      text-decoration: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: 1px solid transparent;
+      font-size: 15px;
+      letter-spacing: 0.5px;
+    }
+
+    .sidebar nav a.active {
+      background: #2a2a2a;
+      color: white;
+      border-left: 3px solid #ffffff;
+      padding-left: 17px;
+    }
+
+    .sidebar nav a.secondary {
+      border: 1px solid #333333;
+      margin-top: 20px;
+    }
+
+    .sidebar nav a.secondary:hover {
+      background: #1a1a1a;
+      border-color: #555555;
+      color: white;
+    }
+
+    /* MAIN */
+    .admin-main {
+      flex: 1;
+      padding: 40px 60px;
+      background: #0f0f0f;
+    }
+
+    .admin-main h1 {
+      margin-bottom: 40px;
+      color: white;
+      font-size: 42px;
+      font-weight: 300;
+      letter-spacing: 1px;
+    }
+
+    /* STATS */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, #1a1a1a 0%, #222222 100%);
+      padding: 30px;
+      border-radius: 12px;
+      border: 1px solid #2a2a2a;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #666666, #999999);
+    }
+
+    .stat-card h3 {
+      color: #888888;
+      font-size: 13px;
+      margin-bottom: 15px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
+
+    .stat-card p {
+      font-size: 48px;
+      font-weight: 300;
+      color: white;
+      letter-spacing: -2px;
+    }
+
+    /* SEARCH */
+    .search-input {
+      width: 100%;
+      padding: 16px 20px;
+      margin-bottom: 30px;
+      border: 1px solid #2a2a2a;
+      border-radius: 10px;
+      font-size: 15px;
+      background: #1a1a1a;
+      color: white;
+      transition: all 0.3s;
+      letter-spacing: 0.5px;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: #444444;
+      background: #222222;
+    }
+
+    .search-input::placeholder {
+      color: #555555;
+    }
+
+    /* TABLE */
+    #membersTable {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      background: #1a1a1a;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #2a2a2a;
+    }
+
+    #membersTable th {
+      padding: 20px;
+      text-align: left;
+      color: #aaaaaa;
+      font-weight: 500;
+      font-size: 13px;
+      background: #000000;
+      border-bottom: 2px solid #2a2a2a;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    #membersTable td {
+      padding: 20px;
+      color: #cccccc;
+      border-bottom: 1px solid #222222;
+      font-size: 14px;
+      letter-spacing: 0.3px;
+    }
+
+    #membersTable tbody tr {
+      transition: all 0.2s;
+    }
+
+    #membersTable tbody tr:hover {
+      background: #222222;
+    }
+
+    #membersTable tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    #membersTable button {
+      padding: 10px 20px;
+      background: #ffffff;
+      color: #000000;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.2s;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    #membersTable button:hover {
+      background: #e0e0e0;
+      transform: translateY(-1px);
+    }
+
+    #membersTable button:nth-child(2) {
+      background: #dc2626;
+      color: white;
+      margin-right: 0;
+    }
+
+    #membersTable button:nth-child(2):hover {
+      background: #b91c1c;
+    }
+
+    /* DETAILS BOX */
+    .details-box {
+      margin-top: 30px;
+      background: #1a1a1a;
+      padding: 30px;
+      border-radius: 12px;
+      border: 1px solid #2a2a2a;
+    }
+
+    .details-box h3 {
+      margin-bottom: 25px;
+      color: white;
+      font-size: 20px;
+      font-weight: 300;
+      letter-spacing: 1px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #2a2a2a;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+
+    .details-grid div {
+      padding: 15px;
+      background: #0f0f0f;
+      border-radius: 8px;
+      border: 1px solid #2a2a2a;
+      color: #cccccc;
+      font-size: 14px;
+      letter-spacing: 0.3px;
+    }
+
+    .details-grid div b {
+      color: #888888;
+      font-weight: 500;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 1px;
+      display: block;
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="admin-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <h2>GYM ADMIN</h2>
+    <nav>
+      <a class="active">Dashboard</a>
+      <a href="/logout" class="secondary">Logout</a>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="admin-main">
+
+    <h1>Dashboard</h1>
+
+    <!-- STATS -->
+    <div class="stats">
+      <div class="stat-card">
+        <h3>Total Members</h3>
+        <p id="totalCount">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Male</h3>
+        <p id="maleCount">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Female</h3>
+        <p id="femaleCount">0</p>
+      </div>
+    </div>
+
+    <!-- SEARCH -->
+    <input
+      type="text"
+      id="search"
+      placeholder="Search by name or phone..."
+      class="search-input"
+      onkeyup="filterTable()"
+    >
+
+    <!-- TABLE -->
+    <table id="membersTable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Gender</th>
+          <th>Membership</th>
+          <th>Start Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div id="detailsBox" class="details-box" style="display:none;"></div>
+
+  </main>
+</div>
+
+<script>
+fetch("/admin/members")
+  .then(res => res.json())
+  .then(data => {
+    const tbody = document.querySelector("#membersTable tbody");
+
+    tbody.innerHTML = "";
+
+    // Update member counts
+    document.getElementById("totalCount").textContent = data.length;
+    
+    const maleCount = data.filter(m => m.gender.toLowerCase() === 'male').length;
+    const femaleCount = data.filter(m => m.gender.toLowerCase() === 'female').length;
+    
+    document.getElementById("maleCount").textContent = maleCount;
+    document.getElementById("femaleCount").textContent = femaleCount;
+
+    data.forEach(member => {
+      const row = document.createElement("tr");
+
+      row.innerHTML = `
+        <td>${member.firstName} ${member.lastName}</td>
+        <td>${member.phone}</td>
+        <td>${member.gender}</td>
+        <td>${member.membershipType}</td>
+        <td>${new Date(member.preferredStartDate).toLocaleDateString()}</td>
+        <td style="white-space: nowrap;">
+          <button onclick='viewDetails(${JSON.stringify(member)})'>View</button>
+          <button onclick='deleteMember("${member._id}")'>Delete</button>
+        </td>
+      `;
+
+      tbody.appendChild(row);
+    });
+  });
+
+function viewDetails(m) {
+  const box = document.getElementById("detailsBox");
+  box.style.display = "block";
+
+  box.innerHTML = `
+    <h3>Full Member Details</h3>
+
+    <div class="details-grid">
+      <div><b>Email:</b> ${m.email}</div>
+      <div><b>Date of Birth:</b> ${new Date(m.dob).toLocaleDateString()}</div>
+
+      <div><b>Address:</b> ${m.addressLine1}, ${m.city}, ${m.state}</div>
+      <div><b>Country:</b> ${m.country}</div>
+
+      <div><b>Height:</b> ${m.heightCm} cm</div>
+      <div><b>Weight:</b> ${m.weightKg} kg</div>
+
+      <div><b>BMI:</b> ${m.bmi}</div>
+      <div><b>Goal Weight:</b> ${m.goalWeightKg} kg</div>
+
+      <div><b>Emergency Contact:</b> ${m.emergencyFirstName} ${m.emergencyLastName}</div>
+      <div><b>Emergency Phone:</b> ${m.emergencyPhone}</div>
+
+      <div><b>Medical:</b> ${m.hasMedicalConditions}</div>
+      <div><b>Details:</b> ${m.medicalDetails || "N/A"}</div>
+    </div>
+  `;
+}
+
+async function deleteMember(memberId) {
+  if (!confirm('Are you sure you want to delete this member?')) {
+    return;
+  }
+
+  try {
+    const response = await fetch(`/admin/members/${memberId}`, {
+      method: 'DELETE'
+    });
+
+    if (response.ok) {
+      // Reload the page to refresh the table
+      location.reload();
+    } else {
+      alert('Failed to delete member');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('An error occurred while deleting');
+  }
+}
+
+function filterTable() {
+  const searchInput = document.getElementById("search").value.toLowerCase();
+  const table = document.getElementById("membersTable");
+  const rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+
+  for (let i = 0; i < rows.length; i++) {
+    const nameCell = rows[i].getElementsByTagName("td")[0];
+    const phoneCell = rows[i].getElementsByTagName("td")[1];
+    
+    if (nameCell && phoneCell) {
+      const nameText = nameCell.textContent.toLowerCase();
+      const phoneText = phoneCell.textContent.toLowerCase();
+      
+      if (nameText.includes(searchInput) || phoneText.includes(searchInput)) {
+        rows[i].style.display = "";
+      } else {
+        rows[i].style.display = "none";
+      }
+    }
+  }
+}
+</script>
+
+</body>
+</html>

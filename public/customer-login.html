@@ -1,0 +1,244 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+  <title>Customer Login</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="page">
+  <div class="container">
+    <form action="/login" method="POST">
+      <h2>Customer Login</h2>
+      <input type="hidden" name="role" value="customer">
+      <input name="email" placeholder="Email" required>
+      <input name="password" type="password" placeholder="Password" required>
+      <button type="submit">Login</button>
+    </form>
+
+    <div class="center">
+      <a href="index.html" class="secondary">Back to Home</a>
+    </div>
+  </div>
+</div>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Customer Login</title>
+  <link rel="stylesheet" href="style.css">
+ 
+   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: 
+        linear-gradient(rgba(10, 10, 10, 0.75), rgba(10, 10, 10, 0.75)),
+ url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070') center/cover no-repeat fixed;
+      color: #ffffff;
+      min-height: 100vh;
+    }
+    
+    .page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    
+    form {
+      background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
+      padding: 50px 45px;
+      border-radius: 16px;
+      border: 1px solid #2a2a2a;
+      transition: all 0.4s ease;
+    }
+
+    form:hover {
+      transform: translateY(-5px);
+      border-color: #3a3a3a;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 35px;
+      color: #ffffff;
+      font-weight: 300;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    input {
+      width: 100%;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      border: 1px solid #2a2a2a;
+      background: #0a0a0a;
+      color: #ffffff;
+      font-size: 15px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      transition: all 0.3s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #444444;
+      background: #1a1a1a;
+    }
+
+    input::placeholder {
+      color: #666666;
+    }
+
+    button {
+      width: 100%;
+      padding: 16px;
+      margin-top: 10px;
+      border-radius: 8px;
+      background: #ffffff;
+      color: #000000;
+      border: none;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      transition: all 0.3s;
+    }
+
+    button:hover {
+      background: #e0e0e0;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 255, 255, 0.15);
+    }
+
+    .center {
+      text-align: center;
+      margin-top: 25px;
+    }
+
+    .center a {
+      display: inline-block;
+      padding: 14px 40px;
+      border-radius: 8px;
+      background: transparent;
+      border: 1px solid #444444;
+      color: #cccccc;
+      text-decoration: none;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      transition: all 0.3s;
+    }
+
+    .center a:hover {
+      background: #1a1a1a;
+      border-color: #666666;
+      color: #ffffff;
+    }
+  </style>
+
+
+
+
+
+</head>
+<body>
+<div class="page">
+  <div class="container">
+    <form id="loginForm">
+      <h2>Customer Login</h2>
+      <input type="hidden" name="role" value="customer">
+      <input name="email" placeholder="Email" required>
+      <input name="password" type="password" placeholder="Password" required>
+      <button type="submit">Login</button>
+    </form>
+
+    <div class="center">
+      <a href="index.html" class="secondary">Back to Home</a>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast">Invalid credentials! Please try again.</div>
+
+<style>
+.toast {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: #dc2626;
+  color: white;
+  padding: 16px 24px;
+  border-radius: 10px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.4s ease;
+  z-index: 1000;
+  font-weight: 600;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+</style>
+
+<script>
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const formData = new FormData(e.target);
+  const data = {
+    email: formData.get('email'),
+    password: formData.get('password'),
+    role: formData.get('role')
+  };
+
+  try {
+    const response = await fetch('/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    });
+
+    if (response.redirected) {
+      window.location.href = response.url;
+    } else if (!response.ok) {
+      const toast = document.getElementById('toast');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+  } catch (error) {
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+  }
+});
+</script>
+
+
+
+</body>
+</html>
